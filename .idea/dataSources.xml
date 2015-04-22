@@ -1,2 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project version="4" />
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" hash="3380146244">
+    <data-source source="LOCAL" name="GymDB" uuid="5b5af105-c727-4dac-b6cb-edefb8489abe">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/GymDB</jdbc-url>
+      <libraries />
+    </data-source>
+  </component>
+</project>
