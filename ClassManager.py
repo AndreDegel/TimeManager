@@ -78,10 +78,6 @@ except sqlite3.OperationalError:
 class MainWindow():
 
     def __init__(self, master):
-            #Creates variables for the textboxes
-            self.empName = StringVar()
-            self.empRate = DoubleVar()
-            self.empHours = DoubleVar()
 
             #sets window to master, sets title, and window size
             self.master = master
@@ -89,25 +85,11 @@ class MainWindow():
             self.master.geometry("230x150")
 
             #Declares and defines labels, buttons, and textboxes
-            self.lblTitle = Label(self.master, text="Class Manager", font=("Purisa", 12, "bold"), fg="blue")
             self.btnAddInstructor = Button(self.master, text="Add Instructor", width=13, command=self.addInstructor)
-
-            self.lblRate = Label(self.master, text="Hourly Rate: ")
-            self.lblHoursWorked = Label(self.master, text ="Hours Worked: ")
-            #self.btnCalculate = Button(self.master, text="Calculate Pay", width=13, command=self.calculate)
             self.btnQuit = Button(self.master, text="Quit", width=13, command=self.quit)
-            txtBoxRate = Entry(self.master, textvariable=self.empRate)
-            txtBoxHoursWorked = Entry(self.master, textvariable=self.empHours)
 
             #Aligns all of the labels, buttons, and textboxes in grid form
-            self.lblTitle.grid(columnspan=3)
             self.btnAddInstructor.grid(row=1, column=1, sticky=W)
-
-            self.lblRate.grid(row=2, column=1, sticky=W)
-            self.lblHoursWorked.grid(row=3, column=1, sticky=W)
-            txtBoxRate.grid(row=2, column=2)
-            txtBoxHoursWorked.grid(row=3, column=2)
-            #self.btnCalculate.grid(columnspan=4)
             self.btnQuit.grid(columnspan=4)
 
     #Function for quit button to close window
@@ -119,14 +101,11 @@ class MainWindow():
 
             #Sets the showpaycheck class to root2 so it is displayed when calculate button clicked
             root2 = Toplevel(self.master)
-            ShowPaycheck(root2)
-
-
-
+            AddInstructor(root2)
 
 
 #Class for displaying paycheck after calculations
-class ShowPaycheck:
+class AddInstructor:
 
     #myMainWindowClass = MainWindow(empName)
     def __init__(self, master):
@@ -173,7 +152,7 @@ class ShowPaycheck:
         address = self.address.get()
         try:
             cur.execute('INSERT INTO Instructor VALUES(NULL, ?, ?, ?)', (first, last, address,))
-            messagebox.showwarning("New Instructor successfully added")
+            messagebox.showwarning("New Instructor Added", "New Instructor successfully added")
 
         except sqlite3.IntegrityError:
             messagebox.showwarning("New Instructor could not be added")
@@ -182,7 +161,6 @@ class ShowPaycheck:
             cur.close()
             cxn.commit()
             cxn.close()
-
 
 ##Creates the root window and loops it
 def main():
