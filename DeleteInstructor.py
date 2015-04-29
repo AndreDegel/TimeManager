@@ -18,52 +18,47 @@ class DeleteInstructor:
         #creates master window for calculation window, changes title, and sets size
         self.master = master
         self.master.title("Delete Instructor")
-        self.master.geometry("250x140")
+        self.master.geometry("220x70")
 
-        self.firstName = StringVar()
         self.lastName = StringVar()
-        self.address = StringVar()
 
         #Creates labels for outputting the calculations
-        self.lblFirst = Label(self.master, text="First Name: ")
-        txtBoxEmployeeFirstName = Entry(self.master, textvariable=self.firstName)
         self.lblLast = Label(self.master, text="Last Name: ")
         txtBoxEmployeeLastName = Entry(self.master, textvariable=self.lastName)
-        self.lblAddress = Label(self.master, text="Address: ")
-        txtBoxEmployeeAddress = Entry(self.master, textvariable=self.address)
+
 
         #Close Button
         self.btnClose = Button(self.master, text="Close", width=8, command=self.quit)
 
         #Aligns button in grid
-        self.btnClose.grid(row=5, column=2)
+        self.btnClose.grid(row=2, column=2)
 
         #Aligns the labels using the grid
-        self.lblFirst.grid(row=1, column=1, sticky=W)
-        txtBoxEmployeeFirstName.grid(row=1, column=2, sticky=E)
-        self.lblLast.grid(row=2, column=1, sticky=W)
-        txtBoxEmployeeLastName.grid(row=2, column=2)
-        self.lblAddress.grid(row=3, column=1, sticky=W)
-        txtBoxEmployeeAddress.grid(row=3, column=2)
+        self.lblLast.grid(row=1, column=1, sticky=W)
+        txtBoxEmployeeLastName.grid(row=1, column=2)
+
         self.btnDelete = Button(self.master, text="Delete", width=8, command=self.delete)
-        self.btnDelete.grid(row=4, column=2)
+        self.btnDelete.grid(row=2, column=1)
 
     def quit(self):
         self.master.destroy()
 
     def delete(self):
         # Delete instructors to the database
-        first = self.firstName.get()
         last = self.lastName.get()
-        address = self.address.get()
-        try:
-            cur.execute('DELETE FROM Instructor')
-            messagebox.showwarning("Instructor Deleted", " Instructor successfully deleted")
 
-        except sqlite3.IntegrityError:
-            messagebox.showwarning("Instructor could not be deleted")
+        if last == '':
+            messagebox.showwarning("Error", "Please specify the instructor you want to add!")
 
-        finally:
-            #cur.close()
-            cxn.commit()
-            #cxn.close()
+        else:
+            try:
+                cur.execute('DELETE FROM Instructor WHERE lastName = ?', (last,))
+                messagebox.showwarning("Instructor Deleted", " Instructor successfully deleted")
+
+            except sqlite3.Error as e:
+                messagebox.showwarning(e)
+
+            finally:
+                #cur.close()
+                cxn.commit()
+                #cxn.close()

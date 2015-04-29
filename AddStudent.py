@@ -62,19 +62,23 @@ class AddStudent:
         address = self.address.get()
         amountDue = self.amountDue.get()
 
-        try:
-            cur.execute('INSERT INTO Student VALUES(NULL, ?, ?, ?, ?)', (first, last, address, amountDue,))
-            messagebox.showwarning("New Student Added", "New Student successfully added")
+        if first == '' or last == '' or address == '':
+            messagebox.showwarning("Error", "Please fill in all empty text boxes!")
 
-            cur.execute('SELECT * FROM Student')
-            for eachUser in cur.fetchall():
-                print("Successfully created the users table.")
-                print(eachUser)
+        else:
+            try:
+                cur.execute('INSERT INTO Student VALUES(NULL, ?, ?, ?, ?)', (first, last, address, amountDue,))
+                messagebox.showwarning("New Student Added", "New Student successfully added")
 
-        except sqlite3.IntegrityError:
-            messagebox.showwarning("New Student could not be added")
+                cur.execute('SELECT * FROM Student')
+                for eachUser in cur.fetchall():
+                    print("Successfully created the users table.")
+                    print(eachUser)
 
-        finally:
-            #cur.close()
-            cxn.commit()
-            #cxn.close()
+            except sqlite3.IntegrityError:
+                messagebox.showwarning("New Student could not be added")
+
+            finally:
+                #cur.close()
+                cxn.commit()
+                #cxn.close()

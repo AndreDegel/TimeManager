@@ -55,14 +55,19 @@ class AddInstructor:
         first = self.firstName.get()
         last = self.lastName.get()
         address = self.address.get()
-        try:
-            cur.execute('INSERT INTO Instructor VALUES(NULL, ?, ?, ?)', (first, last, address,))
-            messagebox.showwarning("New Instructor Added", "New Instructor successfully added")
 
-        except sqlite3.IntegrityError:
-            messagebox.showwarning("New Instructor could not be added")
+        if first == '' or last == '' or address == '':
+            messagebox.showwarning("Error", "Please fill in all empty text boxes!")
 
-        finally:
-            #cur.close()
-            cxn.commit()
-            #cxn.close()
+        else:
+            try:
+                cur.execute('INSERT INTO Instructor VALUES(NULL, ?, ?, ?)', (first, last, address,))
+                messagebox.showwarning("New Instructor Added", "New Instructor successfully added")
+
+            except sqlite3.IntegrityError:
+                messagebox.showwarning("New Instructor could not be added")
+
+            finally:
+                #cur.close()
+                cxn.commit()
+                #cxn.close()
