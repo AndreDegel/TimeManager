@@ -310,7 +310,7 @@ class DeleteInstructor:
         last = self.lastName.get()
         address = self.address.get()
         try:
-            cur.execute('DELETE FROM Instructor WHERE address= ? ')
+            cur.execute('DELETE FROM Instructor')
             messagebox.showwarning("Instructor Deleted", " Instructor successfully deleted")
 
         except sqlite3.IntegrityError:
@@ -320,6 +320,8 @@ class DeleteInstructor:
             #cur.close()
             cxn.commit()
             #cxn.close()
+
+
 
 #Class for searching for instructors, times, or classes
 class Search:
