@@ -86,22 +86,32 @@ class MainWindow():
 
             #Declares and defines labels, buttons, and textboxes
             self.btnAddInstructor = Button(self.master, text="Add Instructor", width=13, command=self.addInstructor)
+            self.btnSearch = Button(self.master, text="Search", width=13, command=self.search)
             self.btnQuit = Button(self.master, text="Quit", width=13, command=self.quit)
 
             #Aligns all of the labels, buttons, and textboxes in grid form
             self.btnAddInstructor.grid(row=1, column=1, sticky=W)
-            self.btnQuit.grid(columnspan=4)
+            self.btnSearch.grid(row=2, column=1, sticky=W)
+            self.btnQuit.grid(row=3, column=1)
 
     #Function for quit button to close window
     def quit(self):
         self.master.destroy()
 
-    #Function for calculate button. Calculations will be done under this function
+    #Function for displaying the add instructor window
     def addInstructor(self):
+        #Sets the addInstructor class to root2 so it is displayed when Add Instructor button is clicked
+        root2 = Toplevel(self.master)
+        AddInstructor(root2)
 
-            #Sets the showpaycheck class to root2 so it is displayed when calculate button clicked
-            root2 = Toplevel(self.master)
-            AddInstructor(root2)
+    #Function for displaying the searching window
+    def search(self):
+         #Sets the addInstructor class to root2 so it is displayed when Add Instructor button is clicked
+        root2 = Toplevel(self.master)
+        Search(root2)
+
+
+
 
 
 #Class for displaying paycheck after calculations
@@ -112,7 +122,7 @@ class AddInstructor:
         #creates master window for calculation window, changes title, and sets size
         self.master = master
         self.master.title("Add Instructor")
-        self.master.geometry("250x100")
+        self.master.geometry("250x140")
 
         self.firstName = StringVar()
         self.lastName = StringVar()
@@ -130,7 +140,7 @@ class AddInstructor:
         self.btnClose = Button(self.master, text="Close", width=8, command=self.quit)
 
         #Aligns button in grid
-        self.btnClose.grid(row=4, column=4)
+        self.btnClose.grid(row=5, column=2)
 
         #Aligns the labels using the grid
         self.lblFirst.grid(row=1, column=1, sticky=W)
@@ -140,7 +150,7 @@ class AddInstructor:
         self.lblAddress.grid(row=3, column=1, sticky=W)
         txtBoxEmployeeAddress.grid(row=3, column=2)
         self.btnAdd = Button(self.master, text="Add", width=8, command=self.add)
-        self.btnAdd.grid(row=4, column=1)
+        self.btnAdd.grid(row=4, column=2)
 
     def quit(self):
         self.master.destroy()
@@ -153,6 +163,77 @@ class AddInstructor:
         try:
             cur.execute('INSERT INTO Instructor VALUES(NULL, ?, ?, ?)', (first, last, address,))
             messagebox.showwarning("New Instructor Added", "New Instructor successfully added")
+
+        except sqlite3.IntegrityError:
+            messagebox.showwarning("New Instructor could not be added")
+
+        finally:
+            cur.close()
+            cxn.commit()
+            cxn.close()
+
+#Class for searching for instructors, times, or classes
+class Search:
+
+    #myMainWindowClass = MainWindow(empName)
+    def __init__(self, master):
+        #creates master window for calculation window, changes title, and sets size
+        self.master = master
+        self.master.title("Search")
+        self.master.geometry("350x200")
+
+        #Sets the string variable and checkBox variables
+        self.userSearchInput = StringVar()
+        self.chkVar1 = IntVar()
+        self.chkVar2 = IntVar()
+        self.chkVar3 = IntVar()
+
+        #Widgets
+        self.chkBtnInstructorName = Checkbutton(self.master, text="Instructor Last Name", variable=self.chkVar1, justify=LEFT)
+        self.chkBtnClassName = Checkbutton(self.master, text="Class Name", variable=self.chkVar2, justify=LEFT)
+        self.chkBtnClassDay = Checkbutton(self.master, text="Class Day", variable=self.chkVar3, justify=LEFT)
+        self.lblSearchInformation = Label(self.master, text="Search For Instructor, Classes, or schedules")
+        self.lblSearch = Label(self.master, text="Search: ")
+        txtBoxSearch = Entry(self.master, textvariable=self.userSearchInput)
+
+        #Search Button
+        self.btnSearch = Button(self.master, text="Search", width=12, command=self.searchQuery)
+        #Close Button
+        self.btnClose = Button(self.master, text="Close", width=12, command=self.quit)
+
+        #Aligns the labels using the grid
+        self.lblSearchInformation.grid(row=1, column=1, sticky=W)
+        self.chkBtnInstructorName.grid(row=2, column=1, sticky=W)
+        self.chkBtnClassName.grid(row=3, column=1, sticky=W)
+        self.chkBtnClassDay.grid(row=4, column=1, sticky=W)
+        self.lblSearch.grid(row=5, column=1, sticky=W)
+        txtBoxSearch.grid(row=6, column=1, sticky=W)
+        self.btnSearch.grid(row=7, column=1)
+        self.btnClose.grid(row=8, column=1)
+
+    def quit(self):
+        self.master.destroy()
+
+    def searchQuery(self):
+        # Add instructors to the database
+        self.userSearchCriteria = self.userSearchInput.get()
+        self.value = StringVar()
+
+        try:
+            if(self.chkVar1.get()):
+                cur.execute("SELECT * FROM Instructor WHERE lastName LIKE ?", (self.userSearchCriteria,))
+
+                messagebox.showwarning("Query Results", cur.fetchall())
+
+            elif(self.chkVar2.get()):
+                cur.execute("SELECT * FROM Class WHERE code LIKE ?", (self.userSearchCriteria,))
+
+                messagebox.showwarning("Query Results", cur.fetchall())
+
+            elif(self.chkVar3.get()):
+                cur.execute("SELECT * FROM Schedule WHERE Day LIKE ?", (self.userSearchCriteria,))
+
+                messagebox.showwarning("Query Results", cur.fetchall())
 
         except sqlite3.IntegrityError:
             messagebox.showwarning("New Instructor could not be added")
