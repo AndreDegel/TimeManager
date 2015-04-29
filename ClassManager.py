@@ -3,6 +3,7 @@ __author__ = 'Andre'
 from tkinter import messagebox
 from tkinter import *
 import sqlite3
+
 '''
 Beginning example code for time manager
 '''
@@ -26,17 +27,18 @@ except sqlite3.OperationalError:
 
 # Create some test data
 try:
-    cur.execute('INSERT INTO Instructor VALUES(NULL, "Bob", "Smith", "1234 Street")')
-    cur.execute('INSERT INTO Class VALUES("Weight", "Lifting weights", 250.00, 1)')
-    cur.execute('INSERT INTO Schedule VALUES("Weight", "Monday", "19:00")')
-    cur.execute('INSERT INTO ClassStudent VALUES("Weight", 1, 1)')
-    cur.execute('INSERT INTO Student VALUES(NULL, "Jane", "Smith", "1500 Tree Rd.", 0)')
+    def insert():
+        cur.execute('INSERT INTO Instructor VALUES(NULL, "Bob", "Smith", "1234 Street")')
+        cur.execute('INSERT INTO Class VALUES("Weight", "Lifting weights", 250.00, 1)')
+        cur.execute('INSERT INTO Schedule VALUES("Weight", "Monday", "19:00")')
+        cur.execute('INSERT INTO ClassStudent VALUES("Weight", 1, 1)')
+        cur.execute('INSERT INTO Student VALUES(NULL, "Jane", "Smith", "1500 Tree Rd.", 0)')
 except sqlite3.IntegrityError:
     print("Test data has been put in already")
 
 #  To retrieve data after executing a SELECT statement, you can either treat the cursor as an iterator,
 #  call the cursor’s fetchone() method to retrieve a single matching row, or call fetchall() to get a list of the matching rows.
-try:
+'''try:
     cur.execute('SELECT * FROM Instructor')
     for eachUser in cur.fetchall():
         print("Successfully created the users table.")
@@ -63,14 +65,14 @@ try:
         print(eachUser)
     # handle an sql exception if the table already exists
 except sqlite3.OperationalError:
-    print("Could not retrieve data")
+    print("Could not retrieve data")'''
 
-# Final block runs always so that if something went wrong we can at least close the connection and commit whatever went through
-'''finally:
+'''# Final block runs always so that if something went wrong we can at least close the connection and commit whatever went through
+finally:
     cur.close()
     cxn.commit()
-    cxn.close()
-'''
+    cxn.close()'''
+
 
 
 
@@ -119,6 +121,7 @@ class AddInstructor:
 
     #myMainWindowClass = MainWindow(empName)
     def __init__(self, master):
+
         #creates master window for calculation window, changes title, and sets size
         self.master = master
         self.master.title("Add Instructor")
@@ -168,9 +171,9 @@ class AddInstructor:
             messagebox.showwarning("New Instructor could not be added")
 
         finally:
-            cur.close()
+            #cur.close()
             cxn.commit()
-            cxn.close()
+            #cxn.close()
 
 #Class for searching for instructors, times, or classes
 class Search:
@@ -180,7 +183,7 @@ class Search:
         #creates master window for calculation window, changes title, and sets size
         self.master = master
         self.master.title("Search")
-        self.master.geometry("350x200")
+        self.master.geometry("250x200")
 
         #Sets the string variable and checkBox variables
         self.userSearchInput = StringVar()
@@ -194,7 +197,7 @@ class Search:
         self.chkBtnClassDay = Checkbutton(self.master, text="Class Day", variable=self.chkVar3, justify=LEFT)
         self.lblSearchInformation = Label(self.master, text="Search For Instructor, Classes, or schedules")
         self.lblSearch = Label(self.master, text="Search: ")
-        txtBoxSearch = Entry(self.master, textvariable=self.userSearchInput)
+        self.txtBoxSearch = Entry(self.master, textvariable=self.userSearchInput)
 
         #Search Button
         self.btnSearch = Button(self.master, text="Search", width=12, command=self.searchQuery)
@@ -202,46 +205,44 @@ class Search:
         self.btnClose = Button(self.master, text="Close", width=12, command=self.quit)
 
         #Aligns the labels using the grid
-        self.lblSearchInformation.grid(row=1, column=1, sticky=W)
-        self.chkBtnInstructorName.grid(row=2, column=1, sticky=W)
-        self.chkBtnClassName.grid(row=3, column=1, sticky=W)
-        self.chkBtnClassDay.grid(row=4, column=1, sticky=W)
-        self.lblSearch.grid(row=5, column=1, sticky=W)
-        txtBoxSearch.grid(row=6, column=1, sticky=W)
-        self.btnSearch.grid(row=7, column=1)
-        self.btnClose.grid(row=8, column=1)
+        self.lblSearchInformation.grid(row=1, columnspan=1, sticky=W)
+        self.chkBtnInstructorName.grid(row=2, columnspan=1, sticky=W)
+        self.chkBtnClassName.grid(row=3, columnspan=1, sticky=W)
+        self.chkBtnClassDay.grid(row=4, columnspan=1, sticky=W)
+        self.lblSearch.grid(row=5, columnspan=1, sticky=W)
+        self.txtBoxSearch.grid(row=6, columnspan=1, sticky=W)
+        self.btnSearch.grid(row=7, columnspan=1, sticky=W)
+        self.btnClose.grid(row=8, columnspan=1, sticky=W)
+
+    #Searh Query Function
+    def searchQuery(self):
+        self.userSearchCriteria = self.userSearchInput.get()
+
+        if(self.userSearchCriteria == ""):
+            messagebox.showerror("Entry Error", "Textbox cannot be empty")
+        else:
+            try:
+                #Gets the state of the checkboxes and then searches with the user input
+                if(self.chkVar1.get()):
+                    cur.execute("SELECT * FROM Instructor WHERE lastName LIKE ?", (self.userSearchCriteria,))
+                    messagebox.showwarning("Query Results", cur.fetchall())
+
+                elif(self.chkVar2.get()):
+                    cur.execute("SELECT * FROM Class WHERE code LIKE ?", (self.userSearchCriteria,))
+                    messagebox.showwarning("Query Results", cur.fetchall())
+
+                elif(self.chkVar3.get()):
+                    cur.execute("SELECT * FROM Schedule WHERE Day LIKE ?", (self.userSearchCriteria,))
+                    messagebox.showwarning("Query Results", cur.fetchall())
+
+            except sqlite3.IntegrityError:
+                messagebox.showwarning("Search Error", "No matches could be found")
+
+            finally:
+                cxn.commit()
 
     def quit(self):
         self.master.destroy()
-
-    def searchQuery(self):
-        # Add instructors to the database
-        self.userSearchCriteria = self.userSearchInput.get()
-        self.value = StringVar()
-
-        try:
-            if(self.chkVar1.get()):
-                cur.execute("SELECT * FROM Instructor WHERE lastName LIKE ?", (self.userSearchCriteria,))
-
-                messagebox.showwarning("Query Results", cur.fetchall())
-
-            elif(self.chkVar2.get()):
-                cur.execute("SELECT * FROM Class WHERE code LIKE ?", (self.userSearchCriteria,))
-
-                messagebox.showwarning("Query Results", cur.fetchall())
-
-            elif(self.chkVar3.get()):
-                cur.execute("SELECT * FROM Schedule WHERE Day LIKE ?", (self.userSearchCriteria,))
-
-                messagebox.showwarning("Query Results", cur.fetchall())
-
-        except sqlite3.IntegrityError:
-            messagebox.showwarning("New Instructor could not be added")
-
-        finally:
-            cur.close()
-            cxn.commit()
-            cxn.close()
 
 ##Creates the root window and loops it
 def main():
