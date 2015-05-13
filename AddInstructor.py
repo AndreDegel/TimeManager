@@ -68,6 +68,4 @@ class AddInstructor:
                 messagebox.showwarning("New Instructor could not be added")
 
             finally:
-                #cur.close()
                 cxn.commit()
-                #cxn.close()

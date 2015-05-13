@@ -48,7 +48,7 @@ class DeleteInstructor:
         last = self.lastName.get()
 
         if last == '':
-            messagebox.showwarning("Error", "Please specify the instructor you want to add!")
+            messagebox.showwarning("Error", "Please specify the instructor you want to delete!")
 
         else:
             try:
@@ -59,6 +59,4 @@ class DeleteInstructor:
                 messagebox.showwarning(e)
 
             finally:
-                #cur.close()
                 cxn.commit()
-                #cxn.close()

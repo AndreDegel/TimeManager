@@ -79,6 +79,5 @@ class AddStudent:
                 messagebox.showwarning("New Student could not be added")
 
             finally:
-                #cur.close()
                 cxn.commit()
-                #cxn.close()
+
