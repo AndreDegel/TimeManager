@@ -2,7 +2,7 @@ __author__ = 'Andre'
 
 from tkinter import *
 import sqlite3
-from MainMenu import MainWindow
+import MainMenu
 
 # TODO: Add search for students time schedule
 # TODO: Schedule class for student, also search for student
@@ -46,7 +46,7 @@ def insert():
 ##Creates the root window and loops it
 def main():
     root = Tk()
-    MainWindow(root)
+    MainMenu.MainWindow(root)
     root.mainloop()
 
 #Loops the code so the windows stay open

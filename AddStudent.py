@@ -3,7 +3,7 @@ __author__ = 'Andre'
 from tkinter import messagebox
 from tkinter import *
 import sqlite3
-import ClassManager
+from ClassManager import cxn, cur
 
 #Class for adding students to the database
 class AddStudent:
@@ -75,5 +75,5 @@ class AddStudent:
                 messagebox.showwarning("New Student could not be added")
 
             finally:
-                ClassManager.cxn.commit()
+                cxn.commit()
 

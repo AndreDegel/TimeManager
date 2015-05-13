@@ -3,7 +3,7 @@ __author__ = 'Andre'
 from tkinter import messagebox
 from tkinter import *
 import sqlite3
-import ClassManager
+from ClassManager import cxn, cur
 
 #Class for displaying paycheck after calculations
 class AddInstructor:
@@ -65,4 +65,4 @@ class AddInstructor:
                 messagebox.showwarning("New Instructor could not be added")
 
             finally:
-                ClassManager.cxn.commit()
+                cxn.commit()

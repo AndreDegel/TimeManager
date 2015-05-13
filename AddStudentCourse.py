@@ -1,12 +1,10 @@
-
-
 __author__ = 'Andre'
 
 from tkinter import messagebox
 from tkinter import ttk
 from tkinter import *
 import sqlite3
-import ClassManager
+from ClassManager import cur
 
 # TODO: Add returning for all instructors, and show instructors students or schedule
 # TODO: which students in which class(by day)
