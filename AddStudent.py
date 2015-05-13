@@ -3,11 +3,7 @@ __author__ = 'Andre'
 from tkinter import messagebox
 from tkinter import *
 import sqlite3
-
-# create a connection to the newly made database
-cxn = sqlite3.connect('GymDB')
-# initialize a cursor object to run execute commands on the connected database.
-cur = cxn.cursor()
+import ClassManager
 
 #Class for adding students to the database
 class AddStudent:
@@ -79,5 +75,5 @@ class AddStudent:
                 messagebox.showwarning("New Student could not be added")
 
             finally:
-                cxn.commit()
+                ClassManager.cxn.commit()
 

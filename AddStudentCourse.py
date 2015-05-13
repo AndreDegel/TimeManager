@@ -1,14 +1,13 @@
+
+
 __author__ = 'Andre'
 
 from tkinter import messagebox
 from tkinter import ttk
 from tkinter import *
 import sqlite3
+import ClassManager
 
-# create a connection to the newly made database
-cxn = sqlite3.connect('GymDB')
-# initialize a cursor object to run execute commands on the connected database.
-cur = cxn.cursor()
 # TODO: Add returning for all instructors, and show instructors students or schedule
 # TODO: which students in which class(by day)
 # TODO: handle errors of one student registering for the same class
@@ -97,4 +96,4 @@ class AddStudentCourse:
             messagebox.showwarning(e)
 
         finally:
-            cxn.commit()
+            ClassManager.cxn.commit()

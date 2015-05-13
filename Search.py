@@ -3,11 +3,8 @@ __author__ = 'Andre'
 from tkinter import messagebox
 from tkinter import *
 import sqlite3
+from ClassManager import cur, cxn
 
-# create a connection to the newly made database
-cxn = sqlite3.connect('GymDB')
-# initialize a cursor object to run execute commands on the connected database.
-cur = cxn.cursor()
 #TODO: Have students for classes by day/not all days.
 
 #Class for searching for instructors, times, or classes

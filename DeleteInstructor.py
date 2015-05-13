@@ -3,11 +3,8 @@ __author__ = 'Andre'
 from tkinter import messagebox
 from tkinter import *
 import sqlite3
+import ClassManager
 
-# create a connection to the newly made database
-cxn = sqlite3.connect('GymDB')
-# initialize a cursor object to run execute commands on the connected database.
-cur = cxn.cursor()
 
 #Class for deleting Instructors
 class DeleteInstructor:
@@ -59,4 +56,4 @@ class DeleteInstructor:
                 messagebox.showwarning(e)
 
             finally:
-                cxn.commit()
+                ClassManager.cxn.commit()

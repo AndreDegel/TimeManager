@@ -1,12 +1,9 @@
 __author__ = 'Andre'
+
 from tkinter import messagebox
 from tkinter import *
 import sqlite3
-
-# create a connection to the newly made database
-cxn = sqlite3.connect('GymDB')
-# initialize a cursor object to run execute commands on the connected database.
-cur = cxn.cursor()
+import ClassManager
 
 #Class for displaying paycheck after calculations
 class AddInstructor:
@@ -68,4 +65,4 @@ class AddInstructor:
                 messagebox.showwarning("New Instructor could not be added")
 
             finally:
-                cxn.commit()
+                ClassManager.cxn.commit()
