@@ -21,7 +21,7 @@ class DeleteInstructor:
 
         #Creates labels for outputting the calculations
         self.lblLast = Label(self.master, text="Last Name: ")
-        txtBoxEmployeeLastName = Entry(self.master, textvariable=self.lastName)
+        self.txtBoxEmployeeLastName = Entry(self.master, textvariable=self.lastName)
 
 
         #Close Button
@@ -32,7 +32,7 @@ class DeleteInstructor:
 
         #Aligns the labels using the grid
         self.lblLast.grid(row=1, column=1, sticky=W)
-        txtBoxEmployeeLastName.grid(row=1, column=2)
+        self.txtBoxEmployeeLastName.grid(row=1, column=2)
 
         self.btnDelete = Button(self.master, text="Delete", width=8, command=self.delete)
         self.btnDelete.grid(row=2, column=1)
@@ -51,6 +51,9 @@ class DeleteInstructor:
             try:
                 cur.execute('DELETE FROM Instructor WHERE lastName = ?', (last,))
                 messagebox.showwarning("Instructor Deleted", " Instructor successfully deleted")
+
+                self.txtBoxEmployeeLastName.delete(0, 'end')
+
 
             except sqlite3.Error as e:
                 messagebox.showwarning(e)

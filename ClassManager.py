@@ -4,8 +4,6 @@ from tkinter import *
 import sqlite3
 import MainMenu
 
-# TODO: Add search for students time schedule
-# TODO: Schedule class for student, also search for student
 '''
 Gym classes time manager
 '''

@@ -15,14 +15,15 @@ class Search:
         #creates master window for calculation window, changes title, and sets size
         self.master = master
         self.master.title("Search")
-        self.master.geometry("300x250")
+        self.master.geometry("300x280")
 
         #Sets the string variable and checkBox variables
         self.userSearchInput = StringVar()
         self.rdoVar = IntVar()
-        searches = [("Search Instructor by Last Name", 1), (" Search Class by Name", 2),
-                    ("Search Class by Day", 3), ("Search Registered Students by Class", 4),
-                    ("Retrieve Students time schedule", 5)]
+        searches = [("Search Instructor by Last Name", 1),
+                    ("Search Student by Last Name", 2), ("Search Class by Name", 3),
+                    ("Search Class by Day", 4), ("Search Registered Students by Class", 5),
+                    ("Retrieve Students time schedule", 6)]
 
         # set up the radio buttons and position them on the grid
         for txt, val in searches:
@@ -46,10 +47,10 @@ class Search:
 
         #Aligns the labels using the grid
         self.lblSearchInformation.grid(row=1, columnspan=1, sticky=W)
-        self.lblSearch.grid(row=7, columnspan=1, sticky=W)
-        self.txtBoxSearch.grid(row=8, columnspan=1, sticky=W)
-        self.btnSearch.grid(row=9, columnspan=1, sticky=W)
-        self.btnClose.grid(row=10, columnspan=1, sticky=W)
+        self.lblSearch.grid(row=8, columnspan=1, sticky=W)
+        self.txtBoxSearch.grid(row=9, columnspan=1, sticky=W)
+        self.btnSearch.grid(row=10, columnspan=1, sticky=W)
+        self.btnClose.grid(row=11, columnspan=1, sticky=W)
 
     #Searh Query Function
     def searchQuery(self):
@@ -62,7 +63,7 @@ class Search:
                 # Gets the state of the checkboxes and then searches with the user input
                 # it also accepts partial searches, so searching for "smith" or 's' will both return smith
                 # Search Instructor by last name
-                if(self.rdoVar.get() == 1):
+                if self.rdoVar.get() == 1:
                     instructorlist = []
                     cur.execute("SELECT * FROM Instructor WHERE lastName LIKE ?", (self.userSearchCriteria + "%",))
                     for info in cur.fetchall():
@@ -71,9 +72,20 @@ class Search:
                     msg = "\n".join(instructorlist)
                     messagebox._show("Query Results", msg)
 
+                #Search Student by last Name
+                elif self.rdoVar.get() == 2:
+                    studentList = []
+                    cur.execute("SELECT * FROM Student WHERE lastName LIKE ?", (self.userSearchCriteria + "%",))
+                    for info in cur.fetchall():
+                        student = "ID: " + str(info[0]) + " Name: " + info[1] + " " + info[2] + " Address: " + info[3] + \
+                                  " Amount Due: " + str(info[4])
+                        studentList.append(student)
+                    msg = "\n".join(studentList)
+                    messagebox._show("Query Results", msg)
+
                 # Search Classes by class code
                 # TODO: my choose classes from drop down or by name
-                elif(self.rdoVar.get() == 2):
+                elif self.rdoVar.get() == 3:
                     classlist = []
                     cur.execute("SELECT code, description, price, firstName, lastName FROM Class, Instructor WHERE Class.instructorID = Instructor.id "
                                 "AND code LIKE ?", (self.userSearchCriteria + "%",))
@@ -85,7 +97,7 @@ class Search:
                     messagebox._show("Query Results", msg)
 
                 # Search Schedule by day
-                elif(self.rdoVar.get() == 3):
+                elif self.rdoVar.get() == 4:
                     scheduleList = []
                     cur.execute("SELECT * FROM Schedule WHERE Day LIKE ?", (self.userSearchCriteria + "%",))
                     for info in cur.fetchall():
@@ -95,7 +107,7 @@ class Search:
                     messagebox._show("Query Results", msg)
 
                 # Retrieve all registered students for a specific course
-                elif(self.rdoVar.get() == 4):
+                elif self.rdoVar.get() == 5:
                     register = []
                     cur.execute("SELECT firstName, lastName, description FROM ClassStudent, Student, Class "
                                 "WHERE ClassStudent.code = Class.code AND ClassStudent.studentID = Student.id "
@@ -107,7 +119,7 @@ class Search:
                     messagebox._show("Query Results", msg)
 
                 # Get a students schedule by  his last name
-                elif(self.rdoVar.get() == 5):
+                elif self.rdoVar.get() == 6:
                     studentSchedule = []
                     cur.execute("SELECT Student.firstName, Student.lastName, description, Day, time, "
                                 "Instructor.firstName, Instructor.lastName "
@@ -123,10 +135,13 @@ class Search:
                     msg = "\n".join(studentSchedule)
                     messagebox._show("Query Results", msg)
 
+                # clear the textbox after the search
+                self.txtBoxSearch.delete(0, 'end')
             except sqlite3.IntegrityError:
                 messagebox.showwarning("Search Error", "No matches could be found")
 
             finally:
+
                 cxn.commit()
 
     def quit(self):
