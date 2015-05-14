@@ -8,7 +8,6 @@ from ClassManager import cur, cxn
 
 # TODO: Add returning for all instructors, and show instructors students or schedule
 # TODO: which students in which class(by day)
-# TODO: handle errors of one student registering for the same class
 #Class for deleting Instructors
 class AddStudentCourse:
 
@@ -19,6 +18,7 @@ class AddStudentCourse:
         self.master = master
         self.master.title("Register Student")
         self.master.geometry("220x70")
+
 
         self.courseValues = []
         self.studentValues = []
@@ -79,16 +79,23 @@ class AddStudentCourse:
         course = self.courseCombo.get()
         courseID = self.courseID.get(course)
         studentid = self.studentID.get(student)
-        sequence = 0
         # no need to validate because cannot be null and not different than
         # whats in the database
         # but need to figure out sequence
         try:
-            cur.execute('SELECT COUNT(sequence) as num FROM ClassStudent WHERE studentID = ?', (studentid,))
-            sequence = self.sequenceCount + cur.fetchone()[0]
+            # Validate student registration by checking if he is already registered for that class
+            cur.execute('SELECT studentID  FROM ClassStudent WHERE studentID = ? AND code = ?', (studentid, courseID,))
+            if cur.fetchone():
+                messagebox.showwarning("Warning", "The student you selected is already registered for that class")
+                # set focus back to window
+                self.master.focus_force()
+            else:
+                cur.execute('SELECT COUNT(sequence) as num FROM ClassStudent WHERE studentID = ?', (studentid,))
+                sequence = self.sequenceCount + cur.fetchone()[0]
 
-            cur.execute('Insert INTO ClassStudent VALUES (?, ?, ?)', (courseID, sequence, studentid))
-            messagebox.showwarning("Class Registered", " Class successfully registered")
+                cur.execute('Insert INTO ClassStudent VALUES (?, ?, ?)', (courseID, sequence, studentid))
+                messagebox.showwarning("Class Registered", " Class successfully registered")
+                self.master.focus_force()
 
         except sqlite3.Error as e:
             messagebox.showwarning(e)

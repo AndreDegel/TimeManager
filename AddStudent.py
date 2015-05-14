@@ -60,10 +60,15 @@ class AddStudent:
 
         if first == '' or last == '' or address == '':
             messagebox.showwarning("Error", "Please fill in all empty text boxes!")
+            # set focus back to window
+            self.master.focus_force()
 
         if amountDue < 0:
             messagebox.showwarning("Warning", "Please enter a positive number into the Amount Due field.")
 
+            # set focus back to window and delete textbox contents
+            self.master.focus_force()
+            self.txtBoxAmountDue.delete(0, 'end')
 
         else:
             try:
@@ -78,9 +83,15 @@ class AddStudent:
 
             except sqlite3.IntegrityError:
                 messagebox.showwarning("Error", "New Student could not be added")
+                # set focus back to window
+                self.master.focus_force()
 
             except ValueError:
                 messagebox.showwarning("Warning", "Please enter a number in the amount due text field")
+
+                # set focus back to window and delete textbox contents
+                self.master.focus_force()
+                self.txtBoxAmountDue.delete(0, 'end')
 
             finally:
                 cxn.commit()

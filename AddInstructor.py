@@ -55,6 +55,8 @@ class AddInstructor:
 
         if first == '' or last == '' or address == '':
             messagebox.showwarning("Error", "Please fill in all empty text boxes!")
+            # set focus back to window
+            self.master.focus_force()
 
         else:
             try:
@@ -64,8 +66,12 @@ class AddInstructor:
                 self.txtBoxEmployeeAddress.delete(0, 'end')
                 self.txtBoxEmployeeFirstName.delete(0, 'end')
                 self.txtBoxEmployeeLastName.delete(0, 'end')
+                # set focus back to window
+                self.master.focus_force()
             except sqlite3.IntegrityError:
                 messagebox.showwarning("New Instructor could not be added")
+                # set focus back to window
+                self.master.focus_force()
 
             finally:
                 cxn.commit()

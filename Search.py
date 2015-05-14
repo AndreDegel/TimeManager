@@ -135,8 +135,10 @@ class Search:
                     msg = "\n".join(studentSchedule)
                     messagebox._show("Query Results", msg)
 
-                # clear the textbox after the search
+                # set focus back to window and clear the textbox after the search
+                self.master.focus_force()
                 self.txtBoxSearch.delete(0, 'end')
+
             except sqlite3.IntegrityError:
                 messagebox.showwarning("Search Error", "No matches could be found")
 

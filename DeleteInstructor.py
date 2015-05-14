@@ -46,12 +46,14 @@ class DeleteInstructor:
 
         if last == '':
             messagebox.showwarning("Error", "Please specify the instructor you want to delete!")
+            self.master.focus_force()
 
         else:
             try:
                 cur.execute('DELETE FROM Instructor WHERE lastName = ?', (last,))
                 messagebox.showwarning("Instructor Deleted", " Instructor successfully deleted")
-
+                # set focus back to window and delete textbox entry
+                self.master.focus_force()
                 self.txtBoxEmployeeLastName.delete(0, 'end')
 
 
