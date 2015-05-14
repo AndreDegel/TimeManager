@@ -3,7 +3,7 @@ __author__ = 'Andre'
 from tkinter import messagebox
 from tkinter import *
 import sqlite3
-from ClassManager import cxn
+from ClassManager import cxn, cur
 
 
 #Class for deleting Instructors

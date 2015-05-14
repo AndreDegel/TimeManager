@@ -19,18 +19,22 @@ class Search:
 
         #Sets the string variable and checkBox variables
         self.userSearchInput = StringVar()
-        self.chkVar1 = IntVar()
-        self.chkVar2 = IntVar()
-        self.chkVar3 = IntVar()
-        self.chkVar4 = IntVar()
-        self.chkVar5 = IntVar()
+        self.rdoVar = IntVar()
+        searches = [("Search Instructor by Last Name", 1), (" Search Class by Name", 2),
+                    ("Search Class by Day", 3), ("Search Registered Students by Class", 4),
+                    ("Retrieve Students time schedule", 5)]
+
+        # set up the radio buttons and position them on the grid
+        for txt, val in searches:
+            Radiobutton(self.master,
+                        text=txt,
+                        variable=self.rdoVar,
+                        value=val,
+                        justify=LEFT).grid(row=1+val, columnspan=1, sticky=W)
+
+
 
         #Widgets
-        self.chkBtnInstructorName = Checkbutton(self.master, text="Instructor Last Name", variable=self.chkVar1, justify=LEFT)
-        self.chkBtnClassName = Checkbutton(self.master, text="Class Name", variable=self.chkVar2, justify=LEFT)
-        self.chkBtnClassDay = Checkbutton(self.master, text="Class Day", variable=self.chkVar3, justify=LEFT)
-        self.chkBtnAllClassStudent = Checkbutton(self.master, text="Student class registers", variable=self.chkVar4, justify=LEFT)
-        self.chkBtnGetStudentTime = Checkbutton(self.master, text="Student time schedule", variable=self.chkVar5, justify=LEFT)
         self.lblSearchInformation = Label(self.master, text="Search For Instructor, Classes, or schedules")
         self.lblSearch = Label(self.master, text="Search: ")
         self.txtBoxSearch = Entry(self.master, textvariable=self.userSearchInput)
@@ -42,11 +46,6 @@ class Search:
 
         #Aligns the labels using the grid
         self.lblSearchInformation.grid(row=1, columnspan=1, sticky=W)
-        self.chkBtnInstructorName.grid(row=2, columnspan=1, sticky=W)
-        self.chkBtnClassName.grid(row=3, columnspan=1, sticky=W)
-        self.chkBtnClassDay.grid(row=4, columnspan=1, sticky=W)
-        self.chkBtnAllClassStudent.grid(row=5, columnspan=1, sticky=W)
-        self.chkBtnGetStudentTime.grid(row=6, columnspan=1, sticky=W)
         self.lblSearch.grid(row=7, columnspan=1, sticky=W)
         self.txtBoxSearch.grid(row=8, columnspan=1, sticky=W)
         self.btnSearch.grid(row=9, columnspan=1, sticky=W)
@@ -60,54 +59,62 @@ class Search:
             messagebox.showerror("Entry Error", "Textbox cannot be empty")
         else:
             try:
-                #TODO: Example for output not in tuple, aply to rest, make multiples possible
-                #Gets the state of the checkboxes and then searches with the user input
-                if(self.chkVar1.get()):
+                # Gets the state of the checkboxes and then searches with the user input
+                # it also accepts partial searches, so searching for "smith" or 's' will both return smith
+                # Search Instructor by last name
+                if(self.rdoVar.get() == 1):
                     instructorlist = []
-                    cur.execute("SELECT * FROM Instructor WHERE lastName LIKE ?", (self.userSearchCriteria,))
+                    cur.execute("SELECT * FROM Instructor WHERE lastName LIKE ?", (self.userSearchCriteria + "%",))
                     for info in cur.fetchall():
                         instructor = "ID: " + str(info[0]) + " Name: " + info[1] + " " + info[2] + " Address: " + info[3]
                         instructorlist.append(instructor)
                     msg = "\n".join(instructorlist)
                     messagebox._show("Query Results", msg)
 
-                elif(self.chkVar2.get()):
+                # Search Classes by class code
+                # TODO: my choose classes from drop down or by name
+                elif(self.rdoVar.get() == 2):
                     classlist = []
-                    cur.execute("SELECT code, description, price, lastName FROM Class, Instructor WHERE Class.instructorID = Instructor.id "
-                                "AND code LIKE ?", (self.userSearchCriteria,))
+                    cur.execute("SELECT code, description, price, firstName, lastName FROM Class, Instructor WHERE Class.instructorID = Instructor.id "
+                                "AND code LIKE ?", (self.userSearchCriteria + "%",))
                     for info in cur.fetchall():
-                        classes = "Code: " + str(info[0]) + " Description: " + info[1] + " Price: " + info[2] + " Instructor: " + info[3]
+                        classes = "Code: " + str(info[0]) + " Description: " + info[1] + " Price: " + str(info[2]) + " Instructor: " + \
+                                  info[3] + " " + info[4]
                         classlist.append(classes)
                     msg = "\n".join(classlist)
                     messagebox._show("Query Results", msg)
 
-                elif(self.chkVar3.get()):
+                # Search Schedule by day
+                elif(self.rdoVar.get() == 3):
                     scheduleList = []
-                    cur.execute("SELECT * FROM Schedule WHERE Day LIKE ?", (self.userSearchCriteria,))
+                    cur.execute("SELECT * FROM Schedule WHERE Day LIKE ?", (self.userSearchCriteria + "%",))
                     for info in cur.fetchall():
                         schedule = "Code: " + str(info[0]) + " Day: " + info[1] + " Time: " + info[2]
                         scheduleList.append(schedule)
                     msg = "\n".join(scheduleList)
                     messagebox._show("Query Results", msg)
-                    messagebox.showwarning("Query Results", cur.fetchall())
 
-                elif(self.chkVar4.get()):
+                # Retrieve all registered students for a specific course
+                elif(self.rdoVar.get() == 4):
                     register = []
-                    cur.execute("SELECT * FROM ClassStudent")
+                    cur.execute("SELECT firstName, lastName, description FROM ClassStudent, Student, Class "
+                                "WHERE ClassStudent.code = Class.code AND ClassStudent.studentID = Student.id "
+                                "AND description LIKE ?", (self.userSearchCriteria + "%",))
                     for info in cur.fetchall():
-                        instructor = "Code: " + str(info[0]) + " Sequence: " + str(info[1]) + " Student ID:" + str(info[2]) +"\n"
-                        register.append(instructor)
+                        registered = "Student: " + str(info[0]) + str(info[1]) + " Registered for: " + str(info[2]) +"\n"
+                        register.append(registered)
                     msg = "\n".join(register)
                     messagebox._show("Query Results", msg)
 
-                elif(self.chkVar5.get()):
+                # Get a students schedule by  his last name
+                elif(self.rdoVar.get() == 5):
                     studentSchedule = []
                     cur.execute("SELECT Student.firstName, Student.lastName, description, Day, time, "
                                 "Instructor.firstName, Instructor.lastName "
                                 "FROM ClassStudent, Class, Schedule, Student, Instructor "
                                 "WHERE Instructor.id = Class.instructorID AND Student.id = ClassStudent.studentID "
                                 "AND Class.code = ClassStudent.code AND Class.code = Schedule.code "
-                                "AND Student.lastName = ?", (self.userSearchCriteria,))
+                                "AND Student.lastName = ?", (self.userSearchCriteria + "%",))
                     for info in cur.fetchall():
                         courseTimes = "Student: " + str(info[0]) + " " + str(info[1]) + "Course: " + str(info[2]) \
                                       + " Day: " + str(info[3]) + " Time:" + str(info[4]) +\

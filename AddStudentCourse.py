@@ -4,7 +4,7 @@ from tkinter import messagebox
 from tkinter import ttk
 from tkinter import *
 import sqlite3
-from ClassManager import cur
+from ClassManager import cur, cxn
 
 # TODO: Add returning for all instructors, and show instructors students or schedule
 # TODO: which students in which class(by day)
@@ -94,4 +94,4 @@ class AddStudentCourse:
             messagebox.showwarning(e)
 
         finally:
-            ClassManager.cxn.commit()
+            cxn.commit()

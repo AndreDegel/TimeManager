@@ -17,9 +17,9 @@ cxn = sqlite3.connect('GymDB')
 cur = cxn.cursor()
 
 def createTables():
-
+# create the table and fill it with data
     # start a try-except block to handle SQL-Exceptions
-    # create the table and fill it with data
+    # pu in function in case it has to be recreated
     try:
         cur.execute('CREATE TABLE Instructor(id INTEGER PRIMARY KEY, firstName VARCHAR(50), lastName VARCHAR(50), address VARCHAR(50))')
         cur.execute('CREATE TABLE Class(code VARCHAR(8) PRIMARY KEY, description VARCHAR(50), price FLOAT, instructorID INTEGER REFERENCES Instructor(id))')
@@ -30,7 +30,7 @@ def createTables():
         print("The tables have been created already")
 
     # Create some test data
-
+    # function to call if test data gets lost
 def insert():
     try:
         cur.execute('INSERT INTO Instructor VALUES(NULL, "Bob", "Smith", "1234 Street")')
@@ -40,6 +40,16 @@ def insert():
         cur.execute('INSERT INTO Student VALUES(NULL, "Jane", "Smith", "1500 Tree Rd.", 0)')
     except sqlite3.IntegrityError:
         print("Test data has been put in already")
+
+def drop():
+    try:
+        cur.execute('DROP TABLE Instructor')
+        cur.execute('DROP TABLE Class')
+        cur.execute('DROP TABLE Schedule')
+        cur.execute('DROP TABLE ClassStudent')
+        cur.execute('DROP TABLE Student')
+    except sqlite3.Error:
+        print("Test tables could not be dropped")
 
 
 
