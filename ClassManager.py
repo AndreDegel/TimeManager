@@ -14,8 +14,9 @@ cxn = sqlite3.connect('GymDB')
 # initialize a cursor object to run execute commands on the connected database.
 cur = cxn.cursor()
 
+
 def createTables():
-# create the table and fill it with data
+    # create the table and fill it with data
     # start a try-except block to handle SQL-Exceptions
     # pu in function in case it has to be recreated
     try:
@@ -29,6 +30,8 @@ def createTables():
 
     # Create some test data
     # function to call if test data gets lost
+
+
 def insert():
     try:
         cur.execute('INSERT INTO Instructor VALUES(NULL, "Bob", "Smith", "1234 Street")')
@@ -38,6 +41,7 @@ def insert():
         cur.execute('INSERT INTO Student VALUES(NULL, "Jane", "Smith", "1500 Tree Rd.", 0)')
     except sqlite3.IntegrityError:
         print("Test data has been put in already")
+
 
 def drop():
     try:
@@ -50,13 +54,12 @@ def drop():
         print("Test tables could not be dropped")
 
 
-
-##Creates the root window and loops it
+# Creates the root window and loops it
 def main():
     root = Tk()
     MainMenu.MainWindow(root)
     root.mainloop()
 
-#Loops the code so the windows stay open
+# Loops the code so the windows stay open
 if __name__ == "__main__":
     main()

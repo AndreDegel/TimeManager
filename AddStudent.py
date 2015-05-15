@@ -5,12 +5,13 @@ from tkinter import *
 import sqlite3
 from ClassManager import cxn, cur
 
-#Class for adding students to the database
+
 class AddStudent:
 
+    # Class for adding students to the database
     def __init__(self, master):
 
-        #creates master window for calculation window, changes title, and sets size
+        # creates master window for calculation window, changes title, and sets size
         self.master = master
         self.master.title("Add Student")
         self.master.geometry("250x140")
@@ -20,7 +21,7 @@ class AddStudent:
         self.address = StringVar()
         self.amountDue = DoubleVar()
 
-        #Creates labels for outputting the calculations
+        # Creates labels for outputting the calculations
         self.lblFirst = Label(self.master, text="First Name: ")
         self.txtBoxEmployeeFirstName = Entry(self.master, textvariable=self.firstName)
         self.lblLast = Label(self.master, text="Last Name: ")
@@ -30,13 +31,13 @@ class AddStudent:
         self.lblAmountDue = Label(self.master, text="Amount Due: ")
         self.txtBoxAmountDue = Entry(self.master, textvariable=self.amountDue)
 
-        #Close Button
+        # Close Button
         self.btnClose = Button(self.master, text="Close", width=8, command=self.quit)
 
-        #Aligns button in grid
+        # Aligns button in grid
         self.btnClose.grid(row=6, column=2)
 
-        #Aligns the labels using the grid
+        # Aligns the labels using the grid
         self.lblFirst.grid(row=1, column=1, sticky=W)
         self.txtBoxEmployeeFirstName.grid(row=1, column=2, sticky=E)
         self.lblLast.grid(row=2, column=1, sticky=W)
@@ -95,4 +96,3 @@ class AddStudent:
 
             finally:
                 cxn.commit()
-

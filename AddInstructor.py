@@ -5,13 +5,13 @@ from tkinter import *
 import sqlite3
 from ClassManager import cxn, cur
 
-#Class for displaying paycheck after calculations
+# Class for displaying paycheck after calculations
 class AddInstructor:
 
-    #myMainWindowClass = MainWindow(empName)
+    # myMainWindowClass = MainWindow(empName)
     def __init__(self, master):
 
-        #creates master window for calculation window, changes title, and sets size
+        # creates master window for calculation window, changes title, and sets size
         self.master = master
         self.master.title("Add Instructor")
         self.master.geometry("250x140")
@@ -20,7 +20,7 @@ class AddInstructor:
         self.lastName = StringVar()
         self.address = StringVar()
 
-        #Creates labels for outputting the calculations
+        # Creates labels for outputting the calculations
         self.lblFirst = Label(self.master, text="First Name: ")
         self.txtBoxEmployeeFirstName = Entry(self.master, textvariable=self.firstName)
         self.lblLast = Label(self.master, text="Last Name: ")
@@ -28,13 +28,13 @@ class AddInstructor:
         self.lblAddress = Label(self.master, text="Address: ")
         self.txtBoxEmployeeAddress = Entry(self.master, textvariable=self.address)
 
-        #Close Button
+        # Close Button
         self.btnClose = Button(self.master, text="Close", width=8, command=self.quit)
 
-        #Aligns button in grid
+        # Aligns button in grid
         self.btnClose.grid(row=5, column=2)
 
-        #Aligns the labels using the grid
+        # Aligns the labels using the grid
         self.lblFirst.grid(row=1, column=1, sticky=W)
         self.txtBoxEmployeeFirstName.grid(row=1, column=2, sticky=E)
         self.lblLast.grid(row=2, column=1, sticky=W)
