@@ -57,21 +57,31 @@ class AddStudent:
         first = self.firstName.get()
         last = self.lastName.get()
         address = self.address.get()
-        amountDue = self.amountDue.get()
 
         if first == '' or last == '' or address == '':
             messagebox.showwarning("Error", "Please fill in all empty text boxes!")
             # set focus back to window
             self.master.focus_force()
 
-        if amountDue < 0:
-            messagebox.showwarning("Warning", "Please enter a positive number into the Amount Due field.")
-
-            # set focus back to window and delete textbox contents
-            self.master.focus_force()
-            self.txtBoxAmountDue.delete(0, 'end')
-
         else:
+            # validate that the amount due is a valid positive number.
+            try:
+                amountDue = self.amountDue.get()
+                if amountDue < 0:
+                    messagebox.showwarning("Warning", "Please enter a positive number into the Amount Due field.")
+
+                # set focus back to window and delete textbox contents
+                self.master.focus_force()
+                self.txtBoxAmountDue.delete(0, 'end')
+                return
+
+            except ValueError:
+                messagebox.showwarning("Warning", "Please enter a number in the amount due text field")
+
+                # set focus back to window and delete textbox contents
+                self.master.focus_force()
+                self.txtBoxAmountDue.delete(0, 'end')
+
             try:
                 cur.execute('INSERT INTO Student VALUES(NULL, ?, ?, ?, ?)', (first, last, address, amountDue,))
                 messagebox.showwarning("New Student Added", "New Student successfully added")
@@ -87,12 +97,7 @@ class AddStudent:
                 # set focus back to window
                 self.master.focus_force()
 
-            except ValueError:
-                messagebox.showwarning("Warning", "Please enter a number in the amount due text field")
 
-                # set focus back to window and delete textbox contents
-                self.master.focus_force()
-                self.txtBoxAmountDue.delete(0, 'end')
 
             finally:
                 cxn.commit()
